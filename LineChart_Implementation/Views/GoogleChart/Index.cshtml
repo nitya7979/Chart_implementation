@@ -1,0 +1,105 @@
+﻿@{
+    Layout = null;
+}
+
+<!DOCTYPE HTML>
+<html>
+<head>
+    @*<script src="~/Scripts/jquery-3.4.1.js"></script>*@
+    <script src="~/Scripts/jquery-1.7.1.js"></script>
+    @*<script type="text/javascript" src="https://www.google.com/jsapi"></script>*@
+    <script src="~/Scripts/Google_chart.js"></script>
+    <script>
+        var chartData; // globar variable for hold chart data
+        google.load("visualization", "1", { packages: ["corechart"] });
+
+        // Here We will fill chartData
+
+        $(document).ready(function () {
+
+            $.ajax({
+                url: "/GoogleChart/GetChartData",
+                data: "",
+                dataType: "json",
+                type: "GET",
+                contentType: "application/json; chartset=utf-8",
+                success: function (data) {
+                    console.log(data);
+                    //console.log(data.d);
+                    chartData = data;
+                    //bind data in table.
+                    bindtable();
+                },
+                error: function (XMLHttpRequest, textStatus, errorThrown) {
+
+                    alert("Error loading data! Please try again.");
+
+                }
+            }).done(function () {
+                // console.log(chartData);
+                // after complete loading data               
+                google.setOnLoadCallback(drawChart);
+                drawChart();
+               
+            });
+        });
+
+
+        function drawChart() {
+            var data = google.visualization.arrayToDataTable(chartData);
+
+            var options = {
+                title: "Company Performance Product Category Wise",
+                pointSize: 5
+            };
+
+            var lineChart = new google.visualization.LineChart(document.getElementById('chart_div'));
+            lineChart.draw(data, options);
+
+        }
+
+        function bindtable() {
+            debugger;
+            var tbl_body = "";
+            var odd_even = false;
+            $.each(chartData, function () {
+                var tbl_row = "";
+                $.each(this, function (k, v) {
+                    tbl_row += "<td>" + v + "</td>";
+                });
+                tbl_body += "<tr class=\"" + (odd_even ? "odd" : "even") + "\">" + tbl_row + "</tr>";
+                odd_even = !odd_even;
+            });
+            $("#tabledata tbody").html(tbl_body);
+            $("#tabledata tr").eq(0).addClass("header");
+        }
+
+    </script>
+    <style>
+        .header {
+            text-align:center;
+            font-weight:bold;
+        }
+    </style>
+</head>
+<body>
+    <table width="100%">
+        <tr>
+            <td width="65%">
+                <div id="chart_div" style="height: 370px; width: 100%;"></div>
+            </td>
+            <td width="35%">
+
+                <table width="100%" id="tabledata" border="1">
+                    <tbody>
+
+                    </tbody>
+                   
+                </table>
+
+            </td>
+        </tr>
+    </table>
+
+</body>
+</html>                       
