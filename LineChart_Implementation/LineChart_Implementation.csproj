@@ -179,6 +179,7 @@
       <DependentUpon>datamodel.edmx</DependentUpon>
       <LastGenOutput>datamodel.cs</LastGenOutput>
     </Content>
+    <Content Include="sampleScript.sql" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
     <EntityDeploy Include="Models\datamodel.edmx">
